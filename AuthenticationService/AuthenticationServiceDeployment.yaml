@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authenticationservice-deployment
+  labels:
+    app: AuthenticationService
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: AuthenticationService 
+  template:
+    metadata:
+      labels:
+        app: AuthenticationService
+    spec:
+      containers:
+      - name: authenticationservice
+        image: retailbankcr.azurecr.io/RetailBankAuthCR:latest
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: retailbankingsecretsvc
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authenticationservice
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: AuthenticationService
